@@ -19,13 +19,7 @@
         </thead>
         <tbody>
             <tr v-for="issue in issues" :key="issue.id">
-                <td>{{ issue.id }}</td>
-                <td>
-                    {{ issue.title }}
-                </td>
-                <td>{{ issue.user.login }}</td>
-                <td>{{ new Date(issue.created_at).toLocaleString() }}</td>
-                <td>{{ issue.state }}</td>
+                <IssuesListComponent :issue="issue" />
             </tr>
             <tr v-if="issues.length == 0" class="text-center">
                 <td colspan="5">Data is loading, please wait ...</td>
@@ -35,10 +29,15 @@
 </template>
 
 <script>
-import { ref, watch, watchEffect } from 'vue'
+import { ref, watchEffect } from 'vue'
 import axios from 'axios'
+import IssuesListComponent from './IssuesListComponent.vue'
+
 export default {
     name: 'TableComponents',
+    components: {
+        IssuesListComponent
+    },
     setup(){
         const state = ref('open')
         const issues = ref([])
