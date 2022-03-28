@@ -1,8 +1,8 @@
 <template>
     <div class="mb-5"></div>
     <div class="filter-wrapper col-4 mb-3">
-        <select class="form-select">
-            <option selected>Filter Status</option>
+        <select class="form-select" v-model="state">
+            <option selected disabled>Filter Status</option>
             <option value="all">All</option>
             <option value="open">Open</option>
             <option value="closed">Close</option>
