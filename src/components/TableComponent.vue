@@ -89,7 +89,7 @@ export default {
             })
         })
 
-        return {state, issues, page}
+        return { state, issues, page }
     }
 }
 </script>

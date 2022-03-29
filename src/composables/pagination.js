@@ -1,11 +1,11 @@
 const pagination = (pagination, page, issues) => {
 
-    if(pagination == "previous"){
-        if(page > 1){
+    if ( pagination == "previous" ) {
+        if ( page > 1 ) {
             page -= 1
             issues = []
         }
-    }else{
+    } else {
         page += 1
         issues = []
     }

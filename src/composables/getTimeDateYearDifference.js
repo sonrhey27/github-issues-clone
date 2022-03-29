@@ -9,14 +9,13 @@ const getTimeDateYearDifference = (created_at) => {
 
         const days = Math.floor((utc2 - utc1) / _MS_PER_DAY);
 
-        if(days == 0){
-            const diff = (date2.getTime() - date1.getTime()) / 1000;
+        if ( days == 0 ) {
+            let diff = (date2.getTime() - date1.getTime()) / 1000;
             diff /= (60 * 60);
             const hr = Math.abs(Math.round(diff));
             
             return hr + " hrs ago by"
-        }
-        else if(days <= 31){
+        } else if ( days <= 31 ) {
             return days + " days ago by";
         }
 
@@ -25,9 +24,9 @@ const getTimeDateYearDifference = (created_at) => {
         const day = date1.getDate();
         const year = date1.getFullYear();
 
-        if(date1.getFullYear() == date2.getFullYear()){
+        if ( date1.getFullYear() == date2.getFullYear() ) {
             return month + " "+ day + " by";
-        }else{
+        } else {
             return month + " "+ day + ", " + year + " by";
         }
 }
