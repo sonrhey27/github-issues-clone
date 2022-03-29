@@ -21,12 +21,15 @@
             </div>
             <div class="box-body-wrapper" v-for="issue in issues" :key="issue.id">
                 <div class="box-body-content">
-                    <h5>{{ issue.title }} 
+                    <h5>
+                        <i v-if="issue.state == 'open'" class="fa-regular fa-circle-dot open"></i> 
+                        <i v-if="issue.state == 'closed'" class="fa-regular fa-circle-check closed"></i> 
+                        {{ issue.title }} 
                         <span v-for="label in issue.labels" :key="label.id">
                             <span class="badge badge-primary" :style="{'background-color': '#'+label.color, 'margin-right' : '10px'}">{{ label.name }}</span>
                         </span>
                     </h5>
-                    <p class="text-muted">#{{ issue.id }} opened {{ dateDifference(issue.created_at) }} {{ issue.user.login }}</p>
+                    <p class="text-muted">#{{ issue.id }} <span v-if="issue.state == 'open'"> opened </span> <span v-if="issue.state == 'closed'"> closed </span> {{ dateDifference(issue.created_at) }} {{ issue.user.login }}</p>
                 </div>
             </div>
         </div>
@@ -126,5 +129,11 @@ input.form-control.filter {
 .loading {
     padding: 7rem;
     text-align: center;
+}
+.closed {
+    color: #a371f7;
+}
+.open {
+    color: #3fb950;
 }
 </style>
