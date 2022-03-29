@@ -13,8 +13,8 @@
 
 <script>
 export default {
-name: 'IssuesListComponent',
-props: ['issue']
+    name: 'IssuesListComponent',
+    props: ['issue']
 }
 </script>
 

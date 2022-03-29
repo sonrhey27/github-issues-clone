@@ -59,7 +59,7 @@ export default {
             return getTimeDateYearDifference(created_at)
         },
         changeState(e){
-            var stateValue = getState(e.target.value, this.state, this.issues)
+            const stateValue = getState(e.target.value, this.state, this.issues)
             this.state = stateValue.state
             this.issues = stateValue.issues
         },
@@ -67,7 +67,7 @@ export default {
             e.target.value = "is:issue is:open"
         },
         pagination(page_name){
-            var pagination = getPagination(page_name, this.page, this.issues)
+            const pagination = getPagination(page_name, this.page, this.issues)
             this.page = pagination.page
             this.issues = pagination.issues
         }
@@ -79,14 +79,13 @@ export default {
 
         watchEffect(() => {
             axios.get('https://api.github.com/repos/vuejs/vue/issues',{
-            params: {
-                state: state.value,
-                page: page.value
-            }
+                params: {
+                    state: state.value,
+                    page: page.value
+                }
             })
             .then(response => {
                 issues.value = response.data
-            }).catch((error) => {
             })
         })
 

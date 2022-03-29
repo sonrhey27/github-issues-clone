@@ -1,6 +1,6 @@
 const changeState = (value, state, issues) => {
-    var inputValue = value.split(" ")
-    var trimValue = inputValue[1].split(":")
+    const inputValue = value.split(" ")
+    const trimValue = inputValue[1].split(":")
     state = trimValue[1]
     issues = []
 
