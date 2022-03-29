@@ -103,27 +103,27 @@ export default {
 .box-header-title {
     border-bottom: 1px solid #2c3239;
 }
-.box-header-title > div{
+.box-header-title > div {
     margin-left: 1rem;
 }
-.box-header-title{
+.box-header-title {
     padding: 1rem
 }
 .box-body-content {
     border-bottom: 1px solid #2c3239;
     padding: 0.5rem 1.5rem 0rem 1.5rem;
 }
-#basic-addon1{
+#basic-addon1 {
     background: #21262d;
     color: white;
     border: 1px solid #2c3239;
 }
-input.form-control.filter{
+input.form-control.filter {
     background: #010409;
     border:1px solid #2c3239;
     color: white;
 }
-.loading{
+.loading {
     padding: 7rem;
     text-align: center;
 }
