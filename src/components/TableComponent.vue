@@ -3,17 +3,17 @@
     <div class="main">
         <div class="input-group mb-3">
             <span class="input-group-text" id="basic-addon1">Filters</span>
-            <input type="text" class="form-control filter" placeholder="is:issue is:open" aria-describedby="basic-addon1" v-model="state">
+            <input type="text" class="form-control filter" placeholder="is:issue is:open" aria-describedby="basic-addon1" @keydown.enter="changeState" @focus="showDefaultText">
         </div>
     </div>
     <div class="mb-3"></div>
     <div class="box">
-        <div class="box-header">
+        <div class="box-header" v-if="issues.length">
             <div class="box-header-title d-flex">
-                <div class="issue-open">
+                <div class="issue-open" :class="[state === 'open' ? '' : 'text-muted']">
                     327 Open
                 </div>
-                <div class="issue-close text-muted">
+                <div class="issue-close" :class="[state === 'open' ? 'text-muted' : '']">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
                     <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
                     </svg> 9,371 Closed
@@ -30,13 +30,24 @@
                 </div>
             </div>
         </div>
+        <div class="box-header loading" v-if="issues.length == 0">
+            <h4>Data is loading, please wait ...</h4>
+        </div>
+        <div class="mt-3"></div>
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-link" :disabled="page == 1" @click="pagination('previous')"><span class="fa fa-caret-left"></span> Previous</button>
+            <button type="button" class="btn btn-link" @click="pagination('next')">Next <span class="fa fa-caret-right"></span> </button>
+        </div>
     </div>
 </template>
 
 <script>
-import { computed, ref, watchEffect } from 'vue'
+import { computed, ref, watchEffect, watch } from 'vue'
 import axios from 'axios'
 import IssuesListComponent from './IssuesListComponent.vue'
+import getTimeDateYearDifference from '../composables/getTimeDateYearDifference'
+import getPagination from '../composables/pagination'
+import getState from '../composables/changeState'
 
 export default {
     name: 'TableComponents',
@@ -44,50 +55,42 @@ export default {
         IssuesListComponent
     },
     methods:{
-        dateDifference(created_at) {
-            const _MS_PER_DAY = 1000 * 60 * 60 * 24;
-            const date1 = new Date(created_at)
-            const date2 = new Date()
-            // get day difference
-            const utc1 = Date.UTC(date1.getFullYear(), date1.getMonth(), date1.getDate());
-            const utc2 = Date.UTC(date2.getFullYear(), date2.getMonth(), date2.getDate());
-
-            var days = Math.floor((utc2 - utc1) / _MS_PER_DAY);
-
-            if(days <= 31){
-                return days + " days ago by";
-            }
-
-            //get the month and year created
-            var month = date1.toLocaleString('default', { month: 'long' });
-            var day = date1.getDate();
-            var year = date1.getFullYear();
-
-            if(date1.getFullYear() == date2.getFullYear()){
-                return month + " "+ day + " by";
-            }else{
-                return month + " "+ day + ", " + year + " by";
-            }
+        dateDifference(created_at){
+            return getTimeDateYearDifference(created_at)
         },
+        changeState(e){
+            var stateValue = getState(e.target.value, this.state, this.issues)
+            this.state = stateValue.state
+            this.issues = stateValue.issues
+        },
+        showDefaultText(e){
+            e.target.value = "is:issue is:open"
+        },
+        pagination(page_name){
+            var pagination = getPagination(page_name, this.page, this.issues)
+            this.page = pagination.page
+            this.issues = pagination.issues
+        }
     },
     setup(){
         const state = ref('open')
         const issues = ref([])
+        const page = ref(1)
 
-        if(state.value === "open" || state.value === "closed" || state.value === "all"){
-            watchEffect(() => {
-                axios.get('https://api.github.com/repos/vuejs/vue/issues',{
-                params: {
-                    state: state.value
-                }
-                })
-                .then(response => {
-                    issues.value = response.data
-                })
+        watchEffect(() => {
+            axios.get('https://api.github.com/repos/vuejs/vue/issues',{
+            params: {
+                state: state.value,
+                page: page.value
+            }
             })
-        }
+            .then(response => {
+                issues.value = response.data
+            }).catch((error) => {
+            })
+        })
 
-        return {state, issues}
+        return {state, issues, page}
     }
 }
 </script>
@@ -120,5 +123,9 @@ input.form-control.filter{
     background: #010409;
     border:1px solid #2c3239;
     color: white;
+}
+.loading{
+    padding: 7rem;
+    text-align: center;
 }
 </style>
