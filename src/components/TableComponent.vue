@@ -10,23 +10,13 @@
     <div class="box">
         <div class="box-header" v-if="issues.length">
             <div class="box-header-title d-flex">
-                <div class="d-flex">
-                    <div class="issue-open" :class="[state === 'open' ? '' : 'text-muted']">
-                        327 Open
-                    </div>
-                    <div class="issue-close" :class="[state === 'open' ? 'text-muted' : '']">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
-                        <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
-                        </svg> 9,371 Closed
-                    </div>
+                <div class="issue-open" :class="[state === 'open' ? '' : 'text-muted']">
+                    327 Open
                 </div>
-                <div class="d-flex">
-                    <div class="author">Author</div>
-                    <div class="author">Label</div>
-                    <div class="author">Projects</div>
-                    <div class="author">Milestones</div>
-                    <div class="assignee">Assignee</div>
-                    <div class="sort">Sort</div>
+                <div class="issue-close" :class="[state === 'open' ? 'text-muted' : '']">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
+                    <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                    </svg> 9,371 Closed
                 </div>
             </div>
             <div class="box-body-wrapper" v-for="issue in issues" :key="issue.id">
