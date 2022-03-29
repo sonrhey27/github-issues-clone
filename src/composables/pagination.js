@@ -1,5 +1,4 @@
 const pagination = (pagination, page, issues) => {
-
     if ( pagination == "previous" ) {
         if ( page > 1 ) {
             page -= 1

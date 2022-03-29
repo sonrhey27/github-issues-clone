@@ -3,7 +3,7 @@
     <div class="main">
         <div class="input-group mb-3">
             <span class="input-group-text" id="basic-addon1">Filters</span>
-            <input type="text" class="form-control filter" placeholder="is:issue is:open" aria-describedby="basic-addon1" @keydown.enter="changeState" @focus="showDefaultText">
+            <input type="text" class="form-control filter" :placeholder="'is:issue is:'+state" aria-describedby="basic-addon1" @keydown.enter="changeState" @focus="showDefaultText">
         </div>
     </div>
     <div class="mb-3"></div>
@@ -11,12 +11,13 @@
         <div class="box-header" v-if="issues.length">
             <div class="box-header-title d-flex">
                 <div class="issue-open" :class="[state === 'open' ? '' : 'text-muted']">
-                    327 Open
+                    <i class="fa-regular fa-circle-dot"></i> 327 Open
                 </div>
-                <div class="issue-close" :class="[state === 'open' ? 'text-muted' : '']">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
-                    <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
-                    </svg> 9,371 Closed
+                <div class="issue-close" :class="[state === 'closed' ? '' : 'text-muted']">
+                    <i class="fa-solid fa-check"></i> 9,371 Closed
+                </div>
+                <div class="issue-open" :class="[state === 'all' ? '' : 'text-muted']">
+                    <i class="fa-solid fa-list"></i> All
                 </div>
             </div>
             <div class="box-body-wrapper" v-for="issue in issues" :key="issue.id">
@@ -46,11 +47,13 @@
 
 <script>
 import { computed, ref, watchEffect, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import axios from 'axios'
 import IssuesListComponent from './IssuesListComponent.vue'
 import getTimeDateYearDifference from '../composables/getTimeDateYearDifference'
 import getPagination from '../composables/pagination'
 import getState from '../composables/changeState'
+import getRouteState from '../composables/saveRouteState'
 
 export default {
     name: 'TableComponents',
@@ -63,22 +66,25 @@ export default {
         },
         changeState(e){
             const stateValue = getState(e.target.value, this.state, this.issues)
+            const routestate = getRouteState(this.$router, this.page, stateValue.state)
             this.state = stateValue.state
             this.issues = stateValue.issues
         },
         showDefaultText(e){
-            e.target.value = "is:issue is:open"
+            e.target.value = "is:issue is:"+this.state+""
         },
         pagination(page_name){
             const pagination = getPagination(page_name, this.page, this.issues)
+            const routestate = getRouteState(this.$router, pagination.page, this.state)
             this.page = pagination.page
             this.issues = pagination.issues
         }
     },
     setup(){
-        const state = ref('open')
+        const route = useRoute()
+        const state = ref((route.query.state != undefined) ? route.query.state : 'open')
         const issues = ref([])
-        const page = ref(1)
+        const page = ref((route.query.page != undefined) ? Number(route.query.page) : 1)
 
         watchEffect(() => {
             axios.get('https://api.github.com/repos/vuejs/vue/issues',{
@@ -107,7 +113,7 @@ export default {
     border-bottom: 1px solid #2c3239;
 }
 .box-header-title > div {
-    margin-left: 1rem;
+    margin-left: 0.5rem;
 }
 .box-header-title {
     padding: 1rem
