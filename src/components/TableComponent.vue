@@ -54,6 +54,7 @@ import getTimeDateYearDifference from '../composables/getTimeDateYearDifference'
 import getPagination from '../composables/pagination'
 import getState from '../composables/changeState'
 import getRouteState from '../composables/saveRouteState'
+import getRouteEntry from '../composables/routeEntry'
 
 export default {
     name: 'TableComponents',
@@ -82,12 +83,14 @@ export default {
     },
     setup(){
         const route = useRoute()
-        const state = ref((route.query.state != undefined) ? route.query.state : 'open')
+        const routeEntry = getRouteEntry(route.query)
+        const state = ref(routeEntry.state)
         const issues = ref([])
-        const page = ref((route.query.page != undefined) ? Number(route.query.page) : 1)
+        const page = ref(routeEntry.page)
 
         watchEffect(() => {
-            axios.get('https://api.github.com/repos/vuejs/vue/issues',{
+            alert(state.value)
+            axios.get('https://api.github.com/repos/vuejs/vue/issues', {
                 params: {
                     state: state.value,
                     page: page.value
